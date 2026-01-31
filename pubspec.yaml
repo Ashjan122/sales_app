@@ -35,6 +35,21 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   lottie: ^3.3.1
+  dio: ^5.9.0
+  shared_preferences: ^2.5.3
+  intl: ^0.20.2
+  dropdown_search: ^6.0.2
+  syncfusion_flutter_pdf: ^31.1.19
+  open_file: ^3.5.11
+  path_provider: ^2.1.5
+  syncfusion_flutter_pdfviewer: ^31.1.19
+  share_plus: ^10.0.0
+  syncfusion_flutter_charts: ^31.1.19
+  pdf: ^3.11.3
+  bidi: ^2.0.13
+  
+  
+  
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +75,7 @@ flutter:
 
   assets:
     - assets/lottie/
+    - assets/fonts/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

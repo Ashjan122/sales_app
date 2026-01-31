@@ -1,6 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:jawda_sales/core/network/dio_client.dart';
+import 'package:jawda_sales/core/services/auth_service.dart';
+import 'package:jawda_sales/screens/home_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    setState(() => isLoading = true);
+
+    try {
+      final response = await DioClient.dio.post(
+        '/login',
+        data: {
+          "username": usernameController.text,
+          "password": passwordController.text,
+        },
+      );
+
+      final token = response.data['access_token'];
+      final username = response.data['user']['name'];
+await AuthService.saveUsername(username);
+
+
+      // حفظ التوكن (خاص باليوزر)
+      await AuthService.saveToken(token);
+
+      // الانتقال للصفحة الرئيسية
+      Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (_) => HomeScreen(),
+  ),
+);
+
+    } on DioException catch (e) {
+      print('ERROR STATUS: ${e.response?.statusCode}');
+    print('ERROR DATA: ${e.response?.data}');
+    print('ERROR MESSAGE: ${e.message}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.response?.data['message'] ?? 'فشل تسجيل الدخول')),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -9,10 +66,8 @@ class LoginScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          
           const BackgroundPainterWidget(),
 
-          
           Positioned(
             top: screenHeight * 0.12,
             left: 0,
@@ -26,7 +81,6 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
 
-          
           LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
@@ -39,13 +93,9 @@ class LoginScreen extends StatelessWidget {
                   height: constraints.maxHeight,
                   child: Column(
                     children: [
-                      
                       SizedBox(height: screenHeight * 0.35),
-
-                      
                       _buildLoginForm(),
-
-                      Spacer(), 
+                      const Spacer(),
                     ],
                   ),
                 ),
@@ -57,7 +107,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTitle() => Center(
+  Widget _buildTitle() => const Center(
         child: Text(
           "جودة للمبيعات",
           style: TextStyle(
@@ -77,25 +127,37 @@ class LoginScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildTextField(
-            hint: "اسم المستخدم", icon: Icons.person, obscureText: false),
+          hint: "اسم المستخدم",
+          icon: Icons.person,
+          obscureText: false,
+          controller: usernameController,
+        ),
         const SizedBox(height: 20),
         _buildTextField(
-            hint: "كلمة المرور", icon: Icons.lock, obscureText: true),
+          hint: "كلمة المرور",
+          icon: Icons.lock,
+          obscureText: true,
+          controller: passwordController,
+        ),
         const SizedBox(height: 30),
         _buildLoginButton(),
       ],
     );
   }
 
-  Widget _buildTextField(
-          {required String hint, required IconData icon, required bool obscureText}) =>
+  Widget _buildTextField({
+    required String hint,
+    required IconData icon,
+    required bool obscureText,
+    required TextEditingController controller,
+  }) =>
       TextField(
+        controller: controller,
         obscureText: obscureText,
-        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: Color(0xFF213D5C)),
-          prefixIcon: Icon(icon, color: Color(0xFF213D5C)),
+          prefixIcon: Icon(icon, color: const Color(0xFF213D5C)),
           filled: true,
           fillColor: Colors.black.withOpacity(0.08),
           border: OutlineInputBorder(
@@ -108,16 +170,18 @@ class LoginScreen extends StatelessWidget {
   Widget _buildLoginButton() => ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 18),
-          backgroundColor: Color(0xFF213D5C),
+          backgroundColor: const Color(0xFF213D5C),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        onPressed: () {},
-        child: const Text(
-          "تسجيل الدخول",
-          style: TextStyle(fontSize: 18, color: Colors.white),
-        ),
+        onPressed: isLoading ? null : login,
+        child: isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+                "تسجيل الدخول",
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
       );
 }
 
@@ -136,9 +200,8 @@ class BackgroundPainterWidget extends StatelessWidget {
 class BackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Color(0xFF213D5C);
+    Paint paint = Paint()..color = const Color(0xFF213D5C);
 
-    // المنحنى العلوي
     Path topPath = Path();
     topPath.moveTo(0, 0);
     topPath.lineTo(0, size.height * 0.25);
@@ -148,7 +211,6 @@ class BackgroundPainter extends CustomPainter {
     topPath.close();
     canvas.drawPath(topPath, paint);
 
-    // المنحنى السفلي
     Path bottomPath = Path();
     bottomPath.moveTo(0, size.height);
     bottomPath.lineTo(0, size.height * 0.75);

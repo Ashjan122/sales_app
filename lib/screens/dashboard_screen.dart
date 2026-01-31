@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:jawda_sales/screens/Suppliers_screen.dart';
+import 'package:jawda_sales/screens/customers_screen.dart';
+import 'package:jawda_sales/screens/home_screen.dart';
+import 'package:jawda_sales/screens/inventory_dashboard_screen.dart';
+import 'package:jawda_sales/screens/products_screen.dart';
+import 'package:jawda_sales/screens/purchases_dashboard_screen.dart';
+import 'package:jawda_sales/screens/purchases_screen.dart';
+import 'package:jawda_sales/screens/reports_dashboard_screen.dart';
+import 'package:jawda_sales/screens/sales_dashboard_screen.dart';
+import 'package:jawda_sales/screens/sales_screen.dart';
+import 'package:jawda_sales/screens/managment_dashboard_screen.dart';
 import 'package:lottie/lottie.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -89,62 +100,77 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: Color(0xFF213D5C),
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              childAspectRatio: 1.05,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              children: [
-                _buildCard(
-                  lottiePath: "assets/lottie/Chart Increasing (1).json",
-                  title: "المبيعات",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-                _buildCard(
-                  lottiePath: "assets/lottie/Loss down growth (1).json",
-                  title: "المشتريات",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-                _buildCard(
-                  lottiePath: "assets/lottie/Inventory (1).json",
-                  title: "المخزون",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-                _buildCard(
-                  lottiePath: "assets/lottie/Shopping (1).json",
-                  title: "المنتجات",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-                _buildCard(
-                  lottiePath: "assets/lottie/Payment Processing (1).json",
-                  title: "نقطة بيع",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-                _buildCard(
-                  lottiePath: "assets/lottie/accounting (1).json",
-                  title: "الحسابات",
-                  borderColor: Color(0xFF213D5C),
-                  circleColor: Color(0xFF213D5C),
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ),
+        body: SafeArea(
+  child: Padding(
+    padding: const EdgeInsets.all(16),
+    child: GridView.count(
+      crossAxisCount: 2,
+      childAspectRatio: 1.05,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      children: [
+        _buildCard(
+          lottiePath: "assets/lottie/Chart Increasing (1).json",
+          title: "المبيعات",
+          borderColor: Color(0xFF213D5C),
+          circleColor: Color(0xFF213D5C),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SalesDashboardScreen()));
+          },
         ),
-      ),
+        _buildCard(
+          lottiePath: "assets/lottie/Loss down growth (1).json",
+          title: "المشتريات",
+          borderColor: Color(0xFF213D5C),
+          circleColor: Color(0xFF213D5C),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => PurchasesDashboardScreen()),
+            );
+          },
+        ),
+        
+        _buildCard(
+          lottiePath: "assets/lottie/Inventory (1).json",
+          title: "المخزون",
+          borderColor: Color(0xFF213D5C),
+          circleColor: Color(0xFF213D5C),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => InventoryDashboardScreen()));
+          },
+        ),
+        
+       
+        _buildCard(
+          lottiePath: "assets/lottie/Gears Lottie Animation.json",
+          title: "الإدارة",
+          borderColor: Color(0xFF213D5C),
+          circleColor: Color(0xFF213D5C),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => ManagementDashboardScreen()));
+          },
+        ),
+        _buildCard(
+          lottiePath: "assets/lottie/accounting (1).json",
+          title: "التقارير",
+          borderColor: Color(0xFF213D5C),
+          circleColor: Color(0xFF213D5C),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder:(context) => ReportsDashboardScreen(),));
+          },
+        ),
+      ],
+    ),
+  ),
+),
+),
     );
   }
 }
